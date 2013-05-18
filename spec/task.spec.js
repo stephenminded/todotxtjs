@@ -78,4 +78,8 @@ describe("task", function() {
 		task.complete();
 		expect(task.done).toBe(true);
 	});
+	it("should provide the text of the task", function() {
+		var task = new Task("(A) 2013-05-24 Do something interesting +project @context");
+		expect(task.text).toBe("Do something interesting");
+	});
 });
