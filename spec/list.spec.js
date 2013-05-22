@@ -1,12 +1,13 @@
 "use strict";
 
 var fs = require('fs');
+var path = require('path');
 var List = require('../lib/todo_list');
 var Task = require('../lib/todo_task');
 
 describe("list", function() {
 	var list;
-	var data = fs.readFileSync(__dirname+'/data/todo.txt').toString();
+	var data = fs.readFileSync(path.resolve(__dirname, 'data', 'todo.txt')).toString();
 	beforeEach(function() {
 		list = new List(data);
 	});
