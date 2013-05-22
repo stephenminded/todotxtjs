@@ -102,10 +102,47 @@ describe("task", function() {
 		expect(task.due_date).toBe(null);
 		expect(task.completed_date).toEqual(new Date("May 24, 2013"));
 	});
+	it("should recognize completion and due dates together", function() {
+		var task = new Task("x 2013-05-24 2013-06-24 This is done with a due date.");
+		expect(task.due_date).toEqual(new Date("June 24, 2013"));
+		expect(task.completed_date).toEqual(new Date("May 24, 2013"));
+	});
 	it("should set the completion date when completed", function() {
 		var task = new Task("2013-05-24 This is not done.");
 		var today = new Date();
 		task.complete();
 		expect(task.completed_date.toDateString()).toBe(today.toDateString());
+	});
+	it("should remove priority when calling task.complete()", function() {
+		var task = new Task("(A) 2013-05-24 Do something interesting +project @context");
+		task.complete();
+		expect(task.priority).toBe(null);
+	});
+	it("should restore original priority on task.not_complete()", function() {
+		var task = new Task("(A) 2013-05-24 Do something interesting +project @context");
+		task.complete();
+		task.not_complete();
+		expect(task.priority).toBe('A');
+	});
+	it("should manage dates using task.toggle()", function() {
+		var task = new Task("(A) 2013-05-24 Do something interesting +project @context");
+		var today = new Date();
+		task.toggle();
+		expect(task.completed_date.toDateString()).toBe(today.toDateString());
+		task.toggle();
+		expect(task.completed_date).toBe(null);
+	});
+	it("should convert to a string", function() {
+		var taskstr = "(A) 2013-05-24 Do something interesting +project @context";
+		var task = new Task(taskstr);
+		expect(task.toString()).toBe(taskstr);
+	});
+	it("should be modifiable", function() {
+		var taskstr = "(A) 2013-05-24 Do something interesting +project @context";
+		var task = new Task(taskstr);
+		var today = (new Date()).toISOString().substring(0, 10);
+		task.toggle();
+		task.contexts = [];
+		expect(task.toString()).toBe("x "+today+" 2013-05-24 Do something interesting +project");
 	});
 });
